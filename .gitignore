@@ -28,11 +28,8 @@ env/
 Thumbs.db
 desktop.ini
 
-# Saved models (large binary files — retrain locally)
-saved_models/*.joblib
-
-# Generated visualizations
-static/visualizations/*.png
+# NOTE: saved_models/ and static/visualizations/ are committed
+# because deployment platforms (Vercel, Render) cannot run training scripts
 
 # Logs
 *.log

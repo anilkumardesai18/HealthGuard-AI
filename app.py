@@ -107,13 +107,26 @@ def get_visualization(filename):
     return send_from_directory(viz_dir, filename)
 
 
+# ─── Auto-Train if Models Missing ─────────────────────────────────────────────
+
+def ensure_models_exist():
+    """Train models automatically if they don't exist."""
+    if not os.path.exists(os.path.join(SAVE_DIR, 'metrics.json')):
+        print("\n⚠️  Models not found — training automatically...")
+        from ml.models import train_all_models
+        from ml.visualizations import generate_all_visualizations
+        train_all_models(save_dir=SAVE_DIR)
+        generate_all_visualizations(
+            metrics_path=os.path.join(SAVE_DIR, 'metrics.json'),
+            output_dir='static/visualizations'
+        )
+        print("✅ Models trained successfully!\n")
+
+
 # ─── Run Server ───────────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
-    if not os.path.exists(os.path.join(SAVE_DIR, 'metrics.json')):
-        print("\n⚠️  Models not trained yet!")
-        print("   Run: python train_models.py\n")
-
+    ensure_models_exist()
     print("\n🏥 HealthGuard AI Server")
     print("   Open: http://localhost:5000\n")
     app.run(debug=True, host='0.0.0.0', port=5000)
