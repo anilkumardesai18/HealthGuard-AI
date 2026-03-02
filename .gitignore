@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+
+# Virtual Environment
+venv/
+env/
+.env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Saved models (large binary files — retrain locally)
+saved_models/*.joblib
+
+# Generated visualizations
+static/visualizations/*.png
+
+# Logs
+*.log
+
+# Jupyter
+.ipynb_checkpoints/

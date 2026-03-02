@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="HealthGuard AI — Multi-Disease Prediction System using Machine Learning. Predicts Heart Disease, Diabetes, and Breast Cancer with 6 ML algorithms.">
+    <title>HealthGuard AI — Multi-Disease Prediction System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Background Grid -->
+    <div class="bg-grid"></div>
+
+    <!-- 3D Canvas -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="#hero" class="nav-logo">
+            <span class="logo-icon">🛡️</span>
+            <span>HealthGuard</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#predict" class="active">Predict</a></li>
+            <li><a href="#comparison">Compare</a></li>
+            <li><a href="#algorithms">Algorithms</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                AI-Powered Health Assessment
+            </div>
+            <h1>
+                Predict Diseases with<br>
+                <span class="gradient-text">Machine Learning</span>
+            </h1>
+            <p>
+                An intelligent multi-disease prediction system powered by 6 ML algorithms.
+                Assess your risk for Heart Disease, Diabetes, and Breast Cancer with confidence-scored results.
+            </p>
+            <div class="hero-buttons">
+                <a href="#predict" class="btn btn-primary">
+                    🔬 Start Prediction
+                </a>
+                <a href="#comparison" class="btn btn-secondary">
+                    📊 View Model Comparison
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="container">
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+                <div class="stat-value">6</div>
+                <div class="stat-label">ML Algorithms</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Diseases</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statModels">18</div>
+                <div class="stat-label">Trained Models</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statBestAcc">—</div>
+                <div class="stat-label">Best Accuracy</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Section -->
+    <section class="section" id="predict">
+        <div class="container">
+            <div class="section-header">
+                <div class="label">Disease Prediction</div>
+                <h2>Select a Disease to Predict</h2>
+                <p>Choose a condition below, fill in the clinical parameters, and get an instant AI prediction with a
+                    confidence score.</p>
+            </div>
+
+            <!-- Disease Cards -->
+            <div class="disease-grid" id="diseaseGrid">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Prediction Form -->
+            <div class="predict-panel" id="predictPanel">
+                <div class="form-card">
+                    <h3 id="formTitle">Enter Patient Data</h3>
+                    <p class="form-subtitle" id="formSubtitle">Fill in the fields below for prediction</p>
+
+                    <form id="predictionForm">
+                        <div class="form-grid" id="formGrid">
+                            <!-- Dynamic form fields -->
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="predictBtn">
+                                🔬 Predict Now
+                            </button>
+                            <div class="spinner" id="spinner"></div>
+                            <div class="algo-selector">
+                                <label>Algorithm:</label>
+                                <select id="algoSelect">
+                                    <option value="best">Best (Auto)</option>
+                                    <option value="random_forest">Random Forest</option>
+                                    <option value="svm">SVM</option>
+                                    <option value="knn">KNN</option>
+                                    <option value="logistic_regression">Logistic Regression</option>
+                                    <option value="gradient_boosting">Gradient Boosting</option>
+                                    <option value="naive_bayes">Naive Bayes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="result-panel" id="resultPanel">
+                <div class="result-card" id="resultCard">
+                    <div class="result-icon" id="resultIcon"></div>
+                    <div class="gauge-container">
+                        <svg width="180" height="180" viewBox="0 0 180 180">
+                            <circle class="gauge-bg" cx="90" cy="90" r="75"></circle>
+                            <circle class="gauge-fill" id="gaugeFill" cx="90" cy="90" r="75" stroke-dasharray="471"
+                                stroke-dashoffset="471"></circle>
+                        </svg>
+                        <div class="gauge-text">
+                            <div class="gauge-value" id="gaugeValue">0%</div>
+                            <div class="gauge-label">Confidence</div>
+                        </div>
+                    </div>
+                    <div class="result-label" id="resultLabel"></div>
+                    <div class="result-algo" id="resultAlgo"></div>
+                    <div class="result-probs">
+                        <div class="prob-item">
+                            <span class="prob-val" id="probNeg" style="color: var(--accent-green)">—</span>
+                            <span class="prob-label">Negative</span>
+                        </div>
+                        <div class="prob-item">
+                            <span class="prob-val" id="probPos" style="color: var(--accent-red)">—</span>
+                            <span class="prob-label">Positive</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Comparison Section -->
+    <section class="section" id="comparison">
+        <div class="container">
+            <div class="section-header">
+                <div class="label">Model Performance</div>
+                <h2>Algorithm Comparison Dashboard</h2>
+                <p>See how each ML algorithm performs across all diseases with detailed metrics and visualizations.</p>
+            </div>
+
+            <!-- Disease Tabs -->
+            <div class="comparison-tabs" id="compTabs">
+                <button class="tab active" data-disease="heart">❤️ Heart</button>
+                <button class="tab" data-disease="diabetes">🩸 Diabetes</button>
+                <button class="tab" data-disease="cancer">🔬 Cancer</button>
+            </div>
+
+            <!-- Comparison Content -->
+            <div id="compContent">
+                <!-- Metrics Table -->
+                <div class="metrics-table-wrapper">
+                    <table class="metrics-table" id="metricsTable">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1 Score</th>
+                                <th>ROC AUC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metricsBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h4>📊 Accuracy Comparison</h4>
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4>📈 Multi-Metric Overview</h4>
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Visualization Images -->
+                <div class="chart-grid" style="margin-top: 24px;">
+                    <div class="viz-card">
+                        <h4
+                            style="font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; color: var(--text-secondary);">
+                            🎯 ROC Curves
+                        </h4>
+                        <img id="rocImage" src="" alt="ROC Curves" loading="lazy">
+                    </div>
+                    <div class="viz-card">
+                        <h4
+                            style="font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; color: var(--text-secondary);">
+                            📋 Confusion Matrix (Best Model)
+                        </h4>
+                        <img id="confusionImage" src="" alt="Confusion Matrix" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Algorithms Section -->
+    <section class="section" id="algorithms">
+        <div class="container">
+            <div class="section-header">
+                <div class="label">Machine Learning</div>
+                <h2>Algorithms Used</h2>
+                <p>Understanding the six ML algorithms powering our predictions.</p>
+            </div>
+
+            <div class="algo-grid">
+                <div class="algo-card">
+                    <div class="algo-num">1</div>
+                    <h4>Random Forest</h4>
+                    <p>An ensemble of decision trees that combines multiple weak learners into a strong classifier. Uses
+                        bagging (bootstrap aggregating) to reduce overfitting and improve generalization. Excellent for
+                        handling non-linear relationships and feature interactions.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-num">2</div>
+                    <h4>Support Vector Machine</h4>
+                    <p>Finds the optimal hyperplane that maximally separates classes in high-dimensional space. Uses the
+                        RBF kernel to handle non-linearly separable data by mapping features to higher dimensions.
+                        Robust in high-dimensional spaces with clear margin of separation.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-num">3</div>
+                    <h4>K-Nearest Neighbors</h4>
+                    <p>A non-parametric, instance-based learning algorithm that classifies based on the majority vote of
+                        its K nearest neighbors. Simple yet effective, requiring no explicit training phase. Performance
+                        depends on the choice of K and distance metric.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-num">4</div>
+                    <h4>Logistic Regression</h4>
+                    <p>A linear classifier that models the probability of a binary outcome using the sigmoid function.
+                        Despite its simplicity, it provides highly interpretable results with coefficient-based feature
+                        importance. Serves as an excellent baseline model.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-num">5</div>
+                    <h4>Gradient Boosting</h4>
+                    <p>Builds an ensemble of weak decision trees sequentially, where each tree corrects the errors of
+                        its predecessor. Uses gradient descent to minimize a loss function. Often achieves the highest
+                        accuracy on structured/tabular data among all algorithms.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-num">6</div>
+                    <h4>Gaussian Naive Bayes</h4>
+                    <p>A probabilistic classifier based on Bayes' theorem with the "naive" assumption of feature
+                        independence. Assumes features follow a Gaussian (normal) distribution. Extremely fast and works
+                        well with small datasets and high-dimensional data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-header">
+                <div class="label">About</div>
+                <h2>About HealthGuard AI</h2>
+                <p>Built as an AICTE Capstone Project to demonstrate practical applications of Machine Learning in
+                    healthcare.</p>
+            </div>
+
+            <div class="algo-grid">
+                <div class="algo-card">
+                    <div class="algo-num">📋</div>
+                    <h4>Project Overview</h4>
+                    <p>HealthGuard AI is a multi-disease prediction system that leverages six different machine learning
+                        algorithms to predict Heart Disease, Diabetes, and Breast Cancer. It compares algorithm
+                        performance and presents results through an interactive dashboard.</p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-num">📊</div>
+                    <h4>Datasets Used</h4>
+                    <p><strong>Heart Disease:</strong> Based on the UCI Cleveland Heart Disease dataset (920 records, 13
+                        features).<br>
+                        <strong>Diabetes:</strong> Modeled on the Pima Indians Diabetes dataset (768 records, 8
+                        features).<br>
+                        <strong>Breast Cancer:</strong> Wisconsin Breast Cancer dataset from scikit-learn (569 records,
+                        30 features).
+                    </p>
+                </div>
+                <div class="algo-card">
+                    <div class="algo-num">⚠️</div>
+                    <h4>Disclaimer</h4>
+                    <p>This system is designed for <strong>educational and research purposes only</strong>. It is NOT a
+                        substitute for professional medical advice, diagnosis, or treatment. Always consult qualified
+                        healthcare professionals for medical decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>HealthGuard AI — AICTE Capstone Project &copy; 2026</p>
+            <div class="tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">scikit-learn</span>
+                <span class="tech-tag">Flask</span>
+                <span class="tech-tag">Chart.js</span>
+                <span class="tech-tag">HTML/CSS/JS</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/scene3d.js"></script>
+</body>
+
+</html>
